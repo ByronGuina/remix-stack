@@ -1,0 +1,31 @@
+name = "remix-stack-dev"
+type = "javascript"
+
+zone_id = ""
+account_id = ""
+route = ""
+workers_dev = true
+vars = { ENVIRONMENT = "dev" }
+
+[env.preview]
+name = "remix-stack-preview"
+vars = { ENVIRONMENT = "preview" }
+
+[env.staging]
+name = "remix-stack-staging"
+vars = { ENVIRONMENT = "staging" }
+
+[env.production]
+name = "remix-stack"
+vars = { ENVIRONMENT = "production" }
+
+[site]
+bucket = "./public"
+entry-point = "."
+
+[build]
+command = "npm run worker:build"
+watch_dir = "build/index.js"
+
+[build.upload]
+format="service-worker"

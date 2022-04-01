@@ -1,0 +1,52 @@
+name: Pull Request checks
+
+on:
+  pull_request:
+    branches: [master]
+
+jobs:
+  build:
+    name: Build app
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🛑 Cancel Previous Runs
+        uses: styfle/cancel-workflow-action@0.9.1
+
+      - name: Check out repo
+        uses: actions/checkout@v2
+
+      - name: Install deps
+        uses: pnpm/action-setup@v2.0.1
+        with:
+          version: 6.0.2
+          run_install: true
+
+      - name: Build
+        run: pnpm build
+
+  deployment:
+    needs: [build]
+    runs-on: ubuntu-latest
+    environment: preview
+    name: Deploy to Cloudflare
+    steps:
+      - name: 🛑 Cancel Previous Runs
+        uses: styfle/cancel-workflow-action@0.9.1
+
+      - name: Check out repo
+        uses: actions/checkout@v2
+
+      - name: Install deps
+        uses: pnpm/action-setup@v2.0.1
+        with:
+          version: 6.0.2
+          run_install: true
+
+      - name: Build
+        run: pnpm build
+
+      - name: Publish on Cloudflare
+        uses: cloudflare/wrangler-action@1.3.0
+        with:
+          apiToken: ${{ secrets.CF_API_TOKEN }}
+          environment: "preview"
